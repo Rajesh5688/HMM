@@ -79,10 +79,6 @@ int viterbi(HMM const& hmm, const int observed[], const int n) {
     for (int i = 0; i < n; i++) {
         prob[i] = new double[hmm._states];
         prevs[i] = new int[hmm._states];
-        for (int j = 0; j < hmm._states; j++) { // not required actually
-            prob[i][j] = 0;
-            prevs[i][j] = 0;
-        }
     }
 
     // Get Initial Prob state

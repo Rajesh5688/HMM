@@ -87,7 +87,7 @@ int viterbi(HMM const& hmm, const int observed[], const int n) {
 
     // Get Initial Prob state
     for (int i = 0; i < hmm._states; i++) {
-        prob[0][i] = hmm._state_prob[i] * hmm._emissionMatrix[i][ observed[0] ];
+        prob[0][i] = hmm._state_prob[i] + hmm._emissionMatrix[i][ observed[0] ];
     }
 
     for (int i = 1; i < n; i++) {
@@ -97,13 +97,13 @@ int viterbi(HMM const& hmm, const int observed[], const int n) {
             int maxIndex;
             // Get the maxProb that best maps from the previous sequence
             for (int k = 0; k < hmm._states; k++) {
-                eachProb = prob[i-1][k] * hmm._stateTransitions[k][j];
+                eachProb = prob[i-1][k] + hmm._stateTransitions[k][j];
                 if (eachProb > maxProb) {
                     maxProb = eachProb;
                     maxIndex = k;
                 }
             }
-            prob[i][j] = maxProb * hmm._emissionMatrix[j][ observed[i] ];
+            prob[i][j] = maxProb + hmm._emissionMatrix[j][ observed[i] ];
             prevs[i-1][j] = maxIndex;
         }
     }

@@ -6,7 +6,11 @@
 /**
  * Viterbi algorithm to get state sequence given a set of observations
  *
+ * Output state transitions can be compared with observed state transition to see of there is any state
+ * tranition.
  *
+ * email: flair.rajesh@gmail.com
+ * 
  */
 
 using namespace std;
@@ -84,7 +88,6 @@ int viterbi(HMM const& hmm, const int observed[], const int n) {
     // Get Initial Prob state
     for (int i = 0; i < hmm._states; i++) {
         prob[0][i] = hmm._state_prob[i] * hmm._emissionMatrix[i][ observed[0] ];
-        cout << "Prob : " << prob[0][i] << endl;
     }
 
     for (int i = 1; i < n; i++) {
@@ -95,7 +98,6 @@ int viterbi(HMM const& hmm, const int observed[], const int n) {
             // Get the maxProb that best maps from the previous sequence
             for (int k = 0; k < hmm._states; k++) {
                 eachProb = prob[i-1][k] * hmm._stateTransitions[k][j];
-                cout << "Prob Loop : " << prob[0][i] << endl;
                 if (eachProb > maxProb) {
                     maxProb = eachProb;
                     maxIndex = k;
@@ -114,7 +116,6 @@ int viterbi(HMM const& hmm, const int observed[], const int n) {
             maxIndex = i;
         }
     }
-    cout << "max ID: " << maxIndex << endl;
     seq[n-1] = maxIndex;
 
     // Back Prop Of states

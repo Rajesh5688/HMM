@@ -128,31 +128,41 @@ public:
                 for( int prevState = 0; prevState < _stateProb.size(); prevState++ )
                 {
                     double p = _transitionMatrix[prevState][currState] * _emissionMatrix[currState][observations_[k]];
-                    backwardObsProb_[k-1][prevState] = backwardObsProb_[k-1][prevState] + (p * backwardObsProb_[k][currState]);
                     transitions[prevState][currState] = transitions[prevState][currState] + ((forwardObsProb_[k-1][prevState] * p * backwardObsProb_[k][currState])/finalProb);
                     transitionStateTags[prevState] = transitionStateTags[prevState] + transitions[prevState][currState];
                 }
             }
         }
 
+        std::vector< std::vector<double> > tranMatrix = _transitionMatrix;
+        std::vector< std::vector<double> > emitMatrix = _emissionMatrix;
         for(unsigned int stateIndex=0; stateIndex < _stateProb.size(); stateIndex++)
         {
             for( unsigned int eachObs=0; eachObs < observations_.size(); eachObs++ )
             {
+                double obsOccuranceCount = 0;
                 // Update Emission Probability
+                for(unsigned int obsIndex=0; obsIndex < observations_.size(); obsIndex++)
+                {
+                    if( observations_[obsIndex] == eachObs )
+                    {
+                        obsOccuranceCount = obsOccuranceCount + 1;
+                    }
+                }
+                emitMatrix[stateIndex][eachObs] =  (obsOccuranceCount * gamma[eachObs][stateIndex]) / gammaStates[stateIndex];
             }
             for( int nextstateIndex = 0; nextstateIndex < _stateProb.size(); nextstateIndex++ )
             {
                 // Update Transition Probabilities.
+                tranMatrix[stateIndex][nextstateIndex] = transitions[stateIndex][nextstateIndex] / gammaStates[stateIndex];
             }
         }
-
     }
 
     std::vector< std::vector<double> > _transitionMatrix;
     std::vector< std::vector<double> > _emissionMatrix;
     std::vector<double> _stateProb;
-    std::vector<double> _expectedState;
+    std::vector<double> _expectedObervationState;
 };
 
 /**
